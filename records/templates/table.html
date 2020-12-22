@@ -1,0 +1,59 @@
+{% extends 'index.html' %}
+{%block content%}
+{% load tags %}
+<link rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css'>
+<script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<form method="post"> 
+    {% csrf_token %} 
+    {{ queryform.as_p }} 
+    {{checkbox_form}}
+    <input type="submit" value="Save"> 
+</form> 
+<table id='main_table'>
+    <thead>
+        <tr>
+            {% for field in fields %}
+                <th>
+                    {{field}}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+            <tr>
+                {% for field in fields %}
+                    <td>
+                        {{student|get_obj_attr:field}}
+                    </td>
+                {% endfor %}
+            </tr>
+        
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // $('#first_name_input').on('input',function(e){
+    //     console.log(e.target.value);
+    // })
+    // $(document).ready(
+    //     $.ajax({
+    //         url: "{% url 'main_table' %}",
+    //         type: 'POST',
+    //         data: {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'test':'test'
+    //         },
+    //         dataType: 'json',
+    //         success: function (res) {
+    //             console.log(res.status);
+    //         }
+    //     })
+    // );
+    $(document).ready(function() {
+    $('#main_table').DataTable();
+} );
+</script>
+
+{% endblock %}
