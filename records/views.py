@@ -4,6 +4,7 @@ from . import models, forms
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
@@ -37,40 +38,66 @@ class TableView(View):
         queryForm = forms.QueryForm()
         students = models.Student.objects.all()
         context = {
-            'queryform' : queryForm,
-            'checkbox_form' : forms.CheckBoxForm(),
+            'query_form' : queryForm,
             'students' : students,
             'fields' : [field.name for field in models.Student._meta.get_fields()]
         }
+        
         return render(request, self.template_name, context)
 
 
     def post(self, request):
-        context={}
+       
+        fields=[field.name for field in models.Student._meta.get_fields()]
+        
         if request.method=='POST':
             queryForm=forms.QueryForm(request.POST)
-            checkBoxForm=forms.CheckBoxForm(request.POST)
             if queryForm.is_valid():
-                context.append(query(queryForm))
-            if checkBoxForm.is_valid():
-                context.append(checkbox(checkBoxForm))
+                context={
+                    'query_form':queryForm,
+                    'students':query(queryForm),
+                    'fields':fields
+                }
                 return render(request, self.template_name, context)
 
 def query(form):
-    fields=[field.name for field in models.Student._meta.get_fields()]
-    name=form.cleaned_data['name']
-    print(form.cleaned_data['check_name'])
-    for field in form:
-        print(field)
-    return {
-        'students' : models.Student.objects.filter(name=name),
-        'fields' : fields,
-        'query_form' : form
-    }
+    filter={}
+    flag=1
+    multipleFilter={}
+    for key, value in form.cleaned_data.items():
+        if value:
+            if not isinstance(value, list):
+                print(value)
+                filter[key]=value
+                print(filter)
+            else:
+                multipleFilter[key]=value
+    students=list(models.Student.objects.filter(**filter))
+    mstudents=students
+    print(students)
+    if multipleFilter:
+        for student in students:
+            for key, value in multipleFilter.items():
+                flag=0
+                print(key)
+                for val in value:
+                    print(val)
+                    print(getattr(student, key))
+                    if str(getattr(student,key)) == val:
+                        flag=1
+                        break    
+                if flag==0:
+                    print("deleted")
+                    print(student)
+                    mstudents.remove(student)
+                    break
+                
+                
+                    
+                
 
-def checkbox(form):
-    for field in form:
-        print(form.cleaned_data[field])
-    return {
-        'checkbox_form': form
-    }
+    print(mstudents)
+    #students=models.Student.objects.filter(**filter)
+    # print(filter)
+    return mstudents
+

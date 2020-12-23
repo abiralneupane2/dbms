@@ -15,6 +15,14 @@ JOB_AT=[
     ('Apple','Apple')
 ]
 
+FACULTY=[
+    ('BCT', 'Bachelor in Computer Engineering'),
+    ('BEX', 'Bachelor in Electronics Engineering'),
+    ('BCE', 'Bachelor in Civil Engineering'),
+    ('BME', 'Bachelor in Mechanical Engineering'),
+    ('BArch', 'Bachelor in Architecture'),
+]
+
 import datetime
 YEAR_CHOICES = []
 for r in range(1980, (datetime.datetime.now().year+1)):
@@ -36,9 +44,10 @@ class Address(models.Model):
 
 
 class University(models.Model):
+    objects=models.Manager()
     name=models.CharField(max_length=50)
     address=models.ForeignKey(Address, on_delete=models.CASCADE)
-    rank=models.IntegerField( unique=True)
+    rank=models.IntegerField(unique=True)
 
     def __str__(self):
         return self.name
@@ -46,13 +55,6 @@ class University(models.Model):
 
 class Student(models.Model):
     objects = models.Manager()
-    FACULTY=[
-        ('BCT', 'Bachelor in Computer Engineering'),
-        ('BEX', 'Bachelor in Electronics Engineering'),
-        ('BCE', 'Bachelor in Civil Engineering'),
-        ('BME', 'Bachelor in Mechanical Engineering'),
-        ('BArch', 'Bachelor in Architecture'),
-    ]
     name=models.CharField(max_length=50)
     gmail_id=models.EmailField(max_length=50)
     bachelor_degree=models.CharField(choices=FACULTY, max_length=50)
