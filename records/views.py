@@ -67,20 +67,23 @@ def query(form):
     for key, value in form.cleaned_data.items():
         if value:
             if not isinstance(value, list):
-                print(value)
                 filter[key]=value
                 print(filter)
             else:
                 multipleFilter[key]=value
     students=list(models.Student.objects.filter(**filter))
-    mstudents=students
-    print(students)
+    mstudents=students.copy()
     if multipleFilter:
+
+
         for student in students:
             for key, value in multipleFilter.items():
                 flag=0
                 print(key)
                 for val in value:
+                    if val=='':
+                        flag=1
+                        break
                     print(val)
                     print(getattr(student, key))
                     if str(getattr(student,key)) == val:

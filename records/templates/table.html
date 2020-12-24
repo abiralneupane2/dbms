@@ -1,25 +1,31 @@
 {% extends 'index.html' %}
 {%block content%}
 {% load tags %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <link rel='stylesheet' href='//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css'>
 <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<form method="post">
-    {% csrf_token %}
-    {{ query_form.as_p }}
+<div class='row'>
+    <div class="col">
+        <form method="post">
+            {% csrf_token %}
+            {{ query_form.as_p }}
 
-    <input type="submit" value="Save">
-</form>
-<div class="container">
-    {% for field in fields %}
-        <button id='button_{{field}}'>{{field}}</button>
-    {% endfor %}
+            <input type="submit" value="Save">
+        </form>
+    </div>
+    <div class="col">
+        {% for field in fields %}
+        <button class="btn btn-primary">{{field}}</button>
+        {% endfor %}
 
+    </div>
 </div>
-<table id='main_table'>
+<table id='main_table' class="table table-hover">
     <thead>
         <tr>
             {% for field in fields %}
-            <th>
+            <th class="{{field}}">
                 {{field}}
             </th>
             {% endfor %}
@@ -29,7 +35,7 @@
         {% for student in students %}
         <tr>
             {% for field in fields %}
-            <td>
+            <td class="{{field}}">
                 {{student|get_obj_attr:field}}
             </td>
             {% endfor %}
@@ -40,28 +46,16 @@
 </table>
 
 <script>
-    // $('#first_name_input').on('input',function(e){
-    //     console.log(e.target.value);
-    // })
-    // $(document).ready(
-    //     $.ajax({
-    //         url: "{% url 'main_table' %}",
-    //         type: 'POST',
-    //         data: {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'test':'test'
-    //         },
-    //         dataType: 'json',
-    //         success: function (res) {
-    //             console.log(res.status);
-    //         }
-    //     })
-    // );
+
     $(document).ready(function () {
         $('#main_table').DataTable();
     });
-    $('button').click(function(){
-        console.log($(this).attr('id'));
+    $('button').click(function () {
+
+        hiderow = $(this).text()
+        row = $('.' + hiderow)
+        row.toggle()
+
     })
 </script>
 

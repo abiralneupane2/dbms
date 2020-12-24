@@ -22,6 +22,11 @@ FACULTY=[
     ('BME', 'Bachelor in Mechanical Engineering'),
     ('BArch', 'Bachelor in Architecture'),
 ]
+COUNTRY=[
+    ('NEP', 'Nepal'),
+    ('USA', 'United States of America')
+]
+
 
 import datetime
 YEAR_CHOICES = []
@@ -35,12 +40,13 @@ class Subject(models.Model):
     def __str__(self):
         return self.name
 
+
+
 class Address(models.Model):
-    country = models.CharField(max_length=20)
-    state = models.CharField(max_length=20)
+    country = models.CharField(choices=COUNTRY, max_length=5)
 
     def __str__(self):
-        return self.state + " state" + ", " + self.country 
+        return str(self.country)
 
 
 class University(models.Model):
